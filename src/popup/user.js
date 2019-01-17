@@ -2,6 +2,12 @@ import Supplier from "./supplier"
 import Engine from "./engine"
 
 
+class LanguageTree {
+    constructor (engines) {
+        this._tree = []
+    }   
+}
+
 export default class User {
     constructor(apiKey, accessPoint) {
         this._apiKey = apiKey
@@ -31,6 +37,29 @@ export default class User {
                                     user._engines.push(engine)
                                 })
                             })
+                            
+                            const sorted = this._engines.sort(function(e1, e2) {
+                
+                                if (e1.srcLang < e2.srcLang) {
+                                  return -1;
+                                }
+                                if (e1.srcLang > e2.srcLang) {
+                                  return 1;
+                                }
+                      
+                                if (e1.tgtLang < e2.tgtLang) {
+                                    return -1   
+                                }
+                                if (e1.tgtLang > e2.tgtLang) {
+                                    return 1   
+                                }
+                            })
+
+                            console.log("xx", sorted)
+
+                            console.log(this._engines)
+
+
                             // Update Authenticated
                             user.setAuthenticated(true)                           
                         }
@@ -51,7 +80,14 @@ export default class User {
             })
         })
         return promise
-    }    
+    }   
+    
+    getLangCascader() {
+   
+        this._engines.forEach(e => {
+            srcLangs.add(e.srcLang)
+        })   
+    }
 
     getSrcLangs() {
         let srcLangs = new Set();
@@ -77,3 +113,4 @@ export default class User {
         this._authenticated = bool
     }
 }
+

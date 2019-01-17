@@ -20,14 +20,14 @@
   </div>  
 </template>
 <script>
-  // import User from './user'
+  import User from './user'
   export default {
     data () {
       return {
         activeName: 'config',
         authFormData: {
-          accessPoint: 'xxx',
-          apiKey: ''
+          accessPoint: 'https://mt-hub.eu/api',
+          apiKey: 'PvWK3Im7srIYaudGh'
         }
       }
     },
@@ -46,23 +46,26 @@
       handleSubmit (e) {
         const accessPoint = this.authFormData.accessPoint
         const apiKey = this.authFormData.apiKey
+        this.authenticate(accessPoint, apiKey)
         console.log(accessPoint)
         // const accessPoint = submitEvent.target.elements.accessPoint.value
         // console.log(accessPoint)
         // this.authenticate()
       },
-      // authenticate () {
-      //   const user = new User("PvWK3Im7srIYaudGh", "https://mt-hub.eu/api")
-      //   user.auth().then(u => {               
-      //       if (user.isAuthenticated()) {
-      //           console.log("auth ok")
-      //       } else {
-      //           console.log("auth error")
-      //       }
-      //   }).catch(err => {
-      //       console.log(err)   
-      //   })
-      // },
+      authenticate (accessPoint, apiKey) {
+        const component = this
+        const user = new User(apiKey, accessPoint)
+        user.auth().then(u => {               
+            if (user.isAuthenticated()) {
+                component.activeName = 'translate'
+                console.log("auth ok")
+            } else {
+                console.log("auth error")
+            }
+        }).catch(err => {
+            console.log(err)   
+        })
+      },
       openFullScreen2 () {
         console.log('pppppp')
         const loading = this.$loading({
