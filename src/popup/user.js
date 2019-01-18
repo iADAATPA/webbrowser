@@ -38,6 +38,9 @@ export default class User {
                                     user._engines.push(engine)
                                 })
                             })
+                            // for debug. REMOVE ME
+                            const engine = new Engine('xx', 'yyy', 'balabla', 'zh', 'en')
+                            user._engines.push(engine)
                             
                             //Sort engines byLang
                             this._engines = this._engines.sort(function(e1, e2) {             
@@ -56,16 +59,22 @@ export default class User {
                             })
 
                             // EngineByLang
-                            this._engineByLang = {}
+                            this._enginesByLang = {}
                             this._engines.forEach( (e, i) => {
                                 let key = e.srcLangName
-                                if (!(key in this._engineByLang)) {
-                                    this._engineByLang[key]=[]                               
+                                if (!(key in this._enginesByLang)) {
+                                    this._enginesByLang[key]=[]                               
                                 } 
-                                this._engineByLang[key].push({index:i, tgtLangName:e.tgtLangName})                             
+                                this._enginesByLang[key].push({
+                                    index:i,
+                                    srcLang:e.srcLang,
+                                    tgtLang:e.tgtLang,
+                                    tgtLangName:e.tgtLangName,
+                                    domain:e.domain
+                                })                             
                             })
                             
-                            console.log(this._engineByLang)
+                            console.log(this._enginesByLang)
                             // Update Authenticated
                             user.setAuthenticated(true)                           
                         }
@@ -87,8 +96,8 @@ export default class User {
         })
         return promise
     }   
-    getEngineByLang() {
-        return this._engineByLang
+    getEnginesByLang() {
+        return this._enginesByLang
     }
     isAuthenticated() {
         return this._authenticated
