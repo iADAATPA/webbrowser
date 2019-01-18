@@ -1,7 +1,32 @@
 <template> 
   <div style="width:400px">  
-      <el-tabs v-model="activeName" @tab-click="handleTabClick" type="border-card">
-        <el-tab-pane label="Translate" name="translate">
+      <el-tabs v-model="activeTab" @tab-click="handleTabClick" type="border-card">
+        <el-tab-pane label="Translate" name="translate" :disabled="translateTabDisabled == 1? true:false">
+            <el-row>
+              <el-col :span="12">
+                <el-select v-model="firstOption"  placeholder="">
+                  <el-option
+                    v-for="(item, index) in list"
+                    :key="index"
+                    :label="index"
+                    :value="index">
+                  </el-option>             
+                </el-select>
+              </el-col>
+              <el-col :span="12">
+                  <el-select v-model="secondOption" placeholder="">
+                  <el-option                    
+                    v-for="option in list[firstOption]"
+                    :key="option.index"
+                    :label="option.tgtLangName"
+                    :value="option.index">
+                  </el-option>              
+                </el-select></el-col>
+            </el-row>
+       
+            <el-row> 
+              <el-col :span="24"><div class="grid-content"><el-button type="primary">Translate</el-button></div></el-col>
+            </el-row>
         </el-tab-pane>
         <el-tab-pane label="Config" name="config" >
           <el-form ref="authForm" :model="authFormData" v-on:submit="handleSubmit">
@@ -15,7 +40,7 @@
               </el-form-item>
             <el-button type="primary" @click="handleSubmit">Sign in</el-button>
           </el-form>
-        </el-tab-pane>
+        </el-tab-pane>         
       </el-tabs>
   </div>  
 </template>
@@ -24,11 +49,19 @@
   export default {
     data () {
       return {
-        activeName: 'config',
+        // Tabs
+        activeTab: 'config',        
+        translateTabDisabled:1,
+        // Auth form
         authFormData: {
           accessPoint: 'https://mt-hub.eu/api',
           apiKey: 'PvWK3Im7srIYaudGh'
-        }
+        },
+        // Language selection
+        firstOption: null,
+        secondOption: null,
+        list: {
+        }        
       }
     },
     computed: { },
@@ -58,6 +91,8 @@
         user.auth().then(u => {               
             if (user.isAuthenticated()) {
                 component.activeName = 'translate'
+                component.list = user.getEngineByLang()
+                component.translateTabDisabled = 0
                 console.log("auth ok")
             } else {
                 console.log("auth error")
@@ -77,7 +112,13 @@
         setTimeout(() => {
           loading.close()
         }, 2000)
+      },
+      
+      handleChange(value) {
+        console.log(value);
       }
+
+
     }
   }
 </script>

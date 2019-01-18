@@ -2,6 +2,7 @@ import Supplier from "./supplier"
 import Engine from "./engine"
 
 
+
 class LanguageTree {
     constructor (engines) {
         this._tree = []
@@ -38,28 +39,33 @@ export default class User {
                                 })
                             })
                             
-                            const sorted = this._engines.sort(function(e1, e2) {
-                
-                                if (e1.srcLang < e2.srcLang) {
+                            //Sort engines byLang
+                            this._engines = this._engines.sort(function(e1, e2) {             
+                                if (e1.srcLangName < e2.srcLangName) {
                                   return -1;
                                 }
-                                if (e1.srcLang > e2.srcLang) {
+                                if (e1.srcLangName > e2.srcLangName) {
                                   return 1;
-                                }
-                      
-                                if (e1.tgtLang < e2.tgtLang) {
+                                }                      
+                                if (e1.tgtLangName < e2.tgtLangName) {
                                     return -1   
                                 }
-                                if (e1.tgtLang > e2.tgtLang) {
+                                if (e1.tgtLangName > e2.tgtLangName) {
                                     return 1   
                                 }
                             })
 
-                            console.log("xx", sorted)
-
-                            console.log(this._engines)
-
-
+                            // EngineByLang
+                            this._engineByLang = {}
+                            this._engines.forEach( (e, i) => {
+                                let key = e.srcLangName
+                                if (!(key in this._engineByLang)) {
+                                    this._engineByLang[key]=[]                               
+                                } 
+                                this._engineByLang[key].push({index:i, tgtLangName:e.tgtLangName})                             
+                            })
+                            
+                            console.log(this._engineByLang)
                             // Update Authenticated
                             user.setAuthenticated(true)                           
                         }
@@ -81,30 +87,9 @@ export default class User {
         })
         return promise
     }   
-    
-    getLangCascader() {
-   
-        this._engines.forEach(e => {
-            srcLangs.add(e.srcLang)
-        })   
+    getEngineByLang() {
+        return this._engineByLang
     }
-
-    getSrcLangs() {
-        let srcLangs = new Set();
-        this._engines.forEach(e=>{
-            srcLangs.add(e.srcLang)
-        })
-        return Array.from(srcLangs).sort();
-    }
-
-    getTgtLangs() {
-        let langs = new Set();
-        this._engines.forEach(e=>{
-            langs.add(e.srcLang)
-        })
-        return Array.from(langs).sort();
-    }
-
     isAuthenticated() {
         return this._authenticated
     }
