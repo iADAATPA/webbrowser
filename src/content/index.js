@@ -1,5 +1,5 @@
 import WebPageTranslator from './web-page-translator'
-
-if (window.webPageTranslator === undefined) {
+console.log('TEST2 Web page translator', window.webPageTranslator)
+if (typeof (window.webPageTranslator) === 'undefined') {
   window.webPageTranslator = new WebPageTranslator()
 }

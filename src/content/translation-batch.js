@@ -1,3 +1,5 @@
+import ElapsedTime from 'elapsed-time'
+
 export default class TranslationBatch {
   constructor (translator, size) {
     this._translator = translator
@@ -18,6 +20,9 @@ export default class TranslationBatch {
 
   translate () {
     console.log('Translate batch of ' + this._transUnits.length + ' transUnits')
+
+    // Measure translation time
+    const elapsedTime = ElapsedTime.new().start()
 
     // Url
     const url = this._translator.getAccessPoint() + '/dev/translate'
@@ -58,6 +63,7 @@ export default class TranslationBatch {
             json.data.segments.forEach((segment, i) => {
               this._transUnits[i].setTgt(segment.translation)
             })
+            console.log('translation batch  of ', this._transUnits.length, 'took', elapsedTime.getValue())
           } else {
             // TODO
           }

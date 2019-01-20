@@ -2,6 +2,7 @@ import TransUnitContainer from './trans-unit-container'
 import TransUnitParser from './trans-unit-parser'
 import {ROOT_ID_ATTRIBUTE} from './trans-unit'
 import TranslationBatch from './translation-batch'
+import ElapsedTime from 'elapsed-time'
 
 export default class Translator {
   constructor (element, srcLang, tgtLang, domain, apiKey, accessPoint, batchSize) {
@@ -22,11 +23,13 @@ export default class Translator {
     this._batches = []
 
     // Extract transUnits
+    const elapsedTime = ElapsedTime.new().start()
     const parser = new TransUnitParser(this._element)
-    console.log('Translator: TransUnits Parsed')
+    const transUnits = parser.getTransUnits()
+    console.log('Translator:', transUnits.length, 'TransUnits Parsed in', elapsedTime.getValue())
 
     // Put transUnits in containers
-    const transUnits = parser.getTransUnits()
+
     transUnits.forEach(transUnit => {
       let root = transUnit.getRoot()
       let id = root.getAttribute(ROOT_ID_ATTRIBUTE)
@@ -54,7 +57,7 @@ export default class Translator {
           })
         }
       })
-    }, {rootMargin: '0px 0px 200px 0px', threshold: 0})
+    }, {rootMargin: '0px 0px 500px 0px', threshold: 0})
 
     console.log('Translator: ViewPort and transUnits container intersection are observed ')
 

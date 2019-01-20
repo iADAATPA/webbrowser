@@ -1,15 +1,32 @@
 <template> 
-  <div style="width:450px" id="main">
+  <div style="width:500px" id="main">
+    <!-- Header -->
     <el-container id="header">
       <div id="logo-container"><div id="logo"><img src="./assets/imgs/logo-mt-hub-small.png"></div></div><h1>Web translator</h1>
-    </el-container>   
+    </el-container>  
+    
+    <!-- Tabs -->
     <div id="tabs">    
-      <el-tabs v-model="data.tabs.activeTab" type="border-card">
-        <el-tab-pane label="Translate" name="translate" :disabled="data.tabs.translateTabDisabled == 1? true:false">
+      <el-tabs v-model="data.activeTab" type="border-card">
+        <el-tab-pane label="Translate" name="translate" :disabled="data.translateTabDisabled == 1? true:false">
             <el-form ref="form">
-            <el-row :gutter="15">
-              <el-col :span="12">
-                <!-- Source language -->
+              <el-row>
+                <el-col :span="24">
+                  <!-- Engine Selector -->
+                  <el-form-item label="Please, choose a translation engine" >
+                    <el-cascader
+                        expand-trigger="hover"
+                        @change="engineSelected"
+                        :options="data.engines"
+                        v-model="data.engine"
+                        style="width:100%"
+                        placeholder="Domain / Source language / Target langugae">
+                    </el-cascader>
+                  </el-form-item> 
+                </el-col>
+              </el-row>
+            <!-- <el-row :gutter="15">
+              <el-col :span="12">               
                 <el-form-item label="Source Language">
                   <el-select v-model="data.translateForm.srcLangName" placeholder="Source Language" @change="srcLangNameChanged">
                     <el-option
@@ -21,8 +38,7 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
-                <!-- Target language -->
+              <el-col :span="12">             
                 <el-form-item label="Target Language">
                   <el-select v-model="data.translateForm.engine" @change="engineSelected" placeholder="Target Language" value-key="index">
                     <el-option                    
@@ -34,27 +50,27 @@
                   </el-select>
                 </el-form-item>
               </el-col>                 
-            </el-row>
+            </el-row> -->
             <el-row> 
               <!-- Translate button -->
               <el-col :span="24">
-                <el-button type="primary" :disabled="data.translateForm.engine == null? true:false" @click="translate">Translate</el-button>
+                <el-button type="primary" :disabled="data.engine == null? true:false" @click="translate">Translate</el-button>
               </el-col>
             </el-row>
           </el-form>
         </el-tab-pane>
-        <!-- AuthForm -->
+        <!-- Login Form -->
         <el-tab-pane label="Log in" name="login" >
-          <el-form ref="authForm">
+          <el-form>
               <!--  Access point -->
               <el-form-item label="Access point">
-                <el-input v-model="data.authFormData.accessPoint" placeholder="Enter your access point">
+                <el-input v-model="data.accessPoint" placeholder="Enter your access point">
                     <template slot="prepend">https://</template>
                 </el-input>            
               </el-form-item>
               <!--  Api key  -->
               <el-form-item label="API key" >
-                <el-input v-model="data.authFormData.apiKey" placeholder="Enter your API key" type="password"></el-input>
+                <el-input v-model="data.apiKey" placeholder="Enter your API key" type="password"></el-input>
               </el-form-item>
               <!--  Sign in -->
               <el-button ref="authenticateButton" type="primary" @click="authenticate" :loading="data.authenticateLoading">Log in</el-button>
@@ -88,7 +104,7 @@
 <script>
   import User from './user'
 
-  const STORAGE_VERSION = 'v4'
+  const STORAGE_VERSION = 'v5'
   const STORAGE_DATA = 'app-data' + STORAGE_VERSION
   const STORAGE_DATA_DATE = 'app-data-date' + STORAGE_VERSION
   const STORAGE_DATA_EXPIRE = 15 * 60 * 1000 // 15 mins
@@ -96,28 +112,19 @@
   const STORAGE_AUTH_DATE = 'app-auth-date' + STORAGE_VERSION
   const STORAGE_AUTH_EXPIRE = 90 * 24 * 60 * 60 * 1000 // 90 dias
 
-  function getDefault (authFormData) {
+  function getDefault () {
     // PvWK3Im7srIYaudGh
-    if (authFormData == null) {
-      authFormData = {
-        accessPoint: 'https://mt-hub.eu/api',
-        apiKey: ''
-      }
-    }
+
     let data = {
       // Tabs
-      tabs: {
-        activeTab: 'login',
-        translateTabDisabled: 1
-      },
-      // Translate form
-      translateForm: {
-        srcLangName: null,
-        engine: null,
-        enginesByLang: {}
-      },
-      // AutForm
-      authFormData: authFormData,
+      activeTab: 'login',
+      translateTabDisabled: 1,
+  
+      accessPoint: 'https://mt-hub.eu/api',
+      apiKey: '',
+
+      engines: [],
+      engine: null,
 
       // Auth loading
       authenticateLoading: false
@@ -130,6 +137,9 @@
     data () {
       return {
         data: getDefault()
+        // options: [],
+        // selectedOptions: [],
+        // selectedOptions2: []
       }
     },
     computed: { },
@@ -139,9 +149,6 @@
     mounted () { },
     methods: {
       // Sign in
-      signIn () {
-  
-      },
       authenticate () {
         // Loading animation for the log in button
         this.data.authenticateLoading = true
@@ -150,8 +157,8 @@
         const that = this
   
         // Login
-        const accessPoint = this.data.authFormData.accessPoint
-        const apiKey = this.data.authFormData.apiKey
+        const accessPoint = this.data.accessPoint
+        const apiKey = this.data.apiKey
         const user = new User(apiKey, accessPoint)
         user.auth().then(u => {
           // Close loading animation
@@ -159,30 +166,16 @@
   
           if (user.isAuthenticated()) {
             // Tab
-            that.data.tabs.activeTab = 'translate'
-            that.data.tabs.translateTabDisabled = 0
+            that.data.activeTab = 'translate'
+            that.data.translateTabDisabled = 0
 
             // Translate form restore language selection
-            that.data.translateForm.srcLangName = null
-            that.data.translateForm.engine = null
+            that.data.engine = null
 
-            // Add languages
-            const enginesByLang = user.getEnginesByLang()
-            that.data.translateForm.enginesByLang = enginesByLang
+            // populate engine selector
+            const engineCascader = user.getEngineCascader()
+            this.data.engines = engineCascader
   
-            // Translate form default Selection
-            // let defaultSelection = null
-            // for (let srcLangName in engineByLang) {
-            //     defaultSelection = {
-            //       srcLangName: srcLangName,
-            //       engineIndex: engineByLang[srcLangName][0].index
-            //     }
-            //     break
-            // }
-            // if (defaultSelection !== null) {
-            //   component.data.translateForm.srcLangName = defaultSelection.srcLangName
-            //   component.data.translateForm.engineIndex = defaultSelection.engineIndex
-            // }
             that.saveData()
             that.saveAuth()
           } else {
@@ -200,9 +193,12 @@
       },
 
       saveAuth () {
-        const authFormData = JSON.stringify(this.data.authFormData)
+        const auth = JSON.stringify({
+          accessPoint: (this.data.accessPoint),
+          apiKey: this.data.apiKey
+        })
         const date = Date.now()
-        localStorage.setItem(STORAGE_AUTH, authFormData)
+        localStorage.setItem(STORAGE_AUTH, auth)
         localStorage.setItem(STORAGE_AUTH_DATE, date)
       },
 
@@ -212,19 +208,26 @@
           const now = Date.now()
           const date = new Date(parseInt(localStorage.getItem(STORAGE_DATA_DATE)))
           if (now - date.getTime() < STORAGE_DATA_EXPIRE) {
+            // We restore the data
             this.data = data
+            // We update the date
+            localStorage.setItem(STORAGE_DATA_DATE, now)
           } else {
-            // todo: eliminar storage
+            // We clear data storage beacause it has expired
+            this.clearStorage(STORAGE_DATA)
+            this.clearStorage(STORAGE_DATA_DATE)
+  
             if (localStorage.hasOwnProperty(STORAGE_AUTH) && localStorage.hasOwnProperty(STORAGE_AUTH_DATE)) {
-              const authFormData = JSON.parse(localStorage.getItem(STORAGE_AUTH))
+              const auth = JSON.parse(localStorage.getItem(STORAGE_AUTH))
               const now = Date.now()
               const date = new Date(parseInt(localStorage.getItem(STORAGE_AUTH_DATE)))
-              this.data.authFormData = authFormData
+  
               if (now - date.getTime() < STORAGE_AUTH_EXPIRE) {
-                this.data.authFormData = authFormData
-                // this.authenticate()
+                this.data.accessPoint = auth.accessPoint
+                this.data.apiKey = auth.apiKey
               } else {
-                // TODO: eliminar storage
+                this.clearStorage(STORAGE_AUTH)
+                this.clearStorage(STORAGE_AUTH_DATE)
               }
             }
           }
@@ -237,46 +240,50 @@
           duration: 3000
         })
       },
-  
-      // When srcLang is selected we update tgtlang
-      srcLangNameChanged () {
-        const srcLangName = this.data.translateForm.srcLangName
-        const engines = this.data.translateForm.enginesByLang[srcLangName]
-  
-        let engineToSelect = null
-        let engineSelected = this.data.translateForm.engine
 
-        for (let e of engines) {
-          if (engineSelected != null) {
-            if (e.tgtLang === engineSelected.tgtLang) {
-              engineToSelect = e
-              break
-            }
-          }
-        }
-        this.data.translateForm.engine = engineToSelect
+      engineSelected () {
         this.saveData()
       },
+      // When srcLang is selected we update tgtlang
+      // srcLangNameChanged () {
+      //   const srcLangName = this.data.translateForm.srcLangName
+      //   const engines = this.data.translateForm.enginesByLang[srcLangName]
+  
+      //   let engineToSelect = null
+      //   let engineSelected = this.data.translateForm.engine
+
+      //   for (let e of engines) {
+      //     if (engineSelected != null) {
+      //       if (e.tgtLang === engineSelected.tgtLang) {
+      //         engineToSelect = e
+      //         break
+      //       }
+      //     }
+      //   }
+      //   this.data.translateForm.engine = engineToSelect
+      //   this.saveData()
+      // },
 
       // When tgt lang is selected
-      engineSelected () {
-        console.log('Engine selected manually', this.data.translateForm.engine)
-        this.saveData()
-      },
+      // engineSelected () {
+      //   console.log('Engine selected manually', this.data.translateForm.engine)
+      //   this.saveData()
+      // },
 
       // Translate current tab
       translate () {
+        this.$message.success('Translation started...')
         console.log('Translating')
-        const srcLang = this.data.translateForm.engine.srcLang
-        const tgtLang = this.data.translateForm.engine.tgtLang
-        const domain = this.data.translateForm.engine.domain
-        const apiKey = this.data.authFormData.apiKey
-        const accessPoint = this.data.authFormData.accessPoint
+        const srcLang = this.data.engine[1]
+        const tgtLang = this.data.engine[2]
+        const domain = this.data.engine[0]
+        const apiKey = this.data.apiKey
+        const accessPoint = this.data.accessPoint
         const batchSize = 20
   
         // send the js code to current tab
         const code = `window.webPageTranslator.translate("${srcLang}", "${tgtLang}", "${domain}", "${apiKey}", "${accessPoint}", ${batchSize})`
-        // console.log(code)
+        console.log(`Translate: "${srcLang}", "${tgtLang}", "${domain}", "${accessPoint}", ${batchSize}"`)
         chrome.tabs.executeScript(null, {code: code})
         // chrome.tabs.executeScript(null, {file: 'js/content.js'}, function () {
         //   // start translation
@@ -289,7 +296,7 @@
         // Restore data
         this.data = getDefault()
 
-        // remove local storage
+        // Remove local storage
         const storages = [
           STORAGE_DATA,
           STORAGE_DATA_DATE,
@@ -297,12 +304,16 @@
           STORAGE_AUTH
         ]
         storages.forEach(key => {
-          console.log(key)
-          if (localStorage.hasOwnProperty(key)) {
-            console.log('delete storage', key)
-            localStorage.clear(key)
-          }
+          this.clearStorage(key)
         })
+      },
+      // Clear a storage key
+      clearStorage (key) {
+        console.log('Delete storage', key)
+        if (localStorage.hasOwnProperty(key)) {
+          console.log('delete storage', key)
+          localStorage.clear(key)
+        }
       }
     }
   }
@@ -365,6 +376,18 @@
   #logo-ce {
     width:100px;
     height: auto;
+  }
+
+  .el-cascader-menu__item--extensible:after {
+    right: 10px !important;
+  }
+
+  .el-cascader-menu {
+     min-width: 150px !important;
+  }
+  .el-cascader-menu__item {
+    padding-left:15px !important;
+    padding-right:15px !important;
   }
 
   
