@@ -1,6 +1,5 @@
-import Director from "./director"
+import WebPageTranslator from './web-page-translator'
 
-
-if (window.director == undefined) {
-    window.director = new Director()
+if (window.webPageTranslator === undefined) {
+  window.webPageTranslator = new WebPageTranslator()
 }

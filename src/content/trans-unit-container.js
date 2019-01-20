@@ -1,18 +1,18 @@
 export default class TransUnitContainer {
-    constructor(el){
-        this._transUnits = []
-        this._element = el
-    }
-    
-    addTransUnit(transUnit) {
-        this._transUnits.push(transUnit)
-    }
+  constructor (el) {
+    this._transUnits = []
+    this._element = el
+  }
 
-    getElement() {
-        return this._element
-    }
+  addTransUnit (transUnit) {
+    this._transUnits.push(transUnit)
+  }
 
-    getTransUnits() {
-        return this._transUnits
-    }
+  getElement () {
+    return this._element
+  }
+
+  getTransUnits () {
+    return this._transUnits
+  }
 }

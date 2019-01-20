@@ -15,7 +15,7 @@ module.exports = {
     tab: resolve('./tab'),
     options: resolve('./options'),
     content: resolve('./content'),
-    background: resolve('./background'),
+    background: resolve('./background')
   },
   output: {
     path: path.join(rootDir, 'dist'),
@@ -86,7 +86,7 @@ module.exports = {
     }]
   },
   plugins: [
-		new CleanWebpackPlugin(['*'], { root: path.join(rootDir, 'dist') }),
+    new CleanWebpackPlugin(['*'], { root: path.join(rootDir, 'dist') }),
     // Customize your extension structure.
     htmlPage('home', 'app', ['manifest', 'vendor', 'tab']),
     htmlPage('popup', 'popup', ['manifest', 'vendor', 'popup']),
@@ -95,7 +95,7 @@ module.exports = {
     // End customize
     new CopyWebpackPlugin([{ from: path.join(rootDir, 'static') }]),
     new ChromeReloadPlugin({
-      port: 9090,
+      port: 20000,
       manifest: path.join(rootDir, 'src', 'manifest.js')
     }),
     new webpack.optimize.CommonsChunkPlugin({
