@@ -10,7 +10,7 @@ A chrome extension to translate web page threw the mt-hub platform
 5. Click on the "Load unpacked extension" button and chose tthe directory you have extracted in step 1
 6. Click on the new icon that has appeared in the Chrome toolbar.
 7. Enter your api key and log in
-8. 
+8. Select domain, source language, target language and click the translate button
 
 ## For developers
 ```
