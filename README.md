@@ -26,13 +26,8 @@ For Prod
 npm run build
 ```
 
+## More
+This extension is based on https/www.npmjs.com/package/vue-webpack-chrome-extension-template
 
 
 
-vue init ALiangLiang/vue-webpack-chrome-extension-template web-translator
-TODO:
-
-
-
-ver error
-https://elpais.com/internacional/2019/01/19/actualidad/1547920451_503999.html
