@@ -13,11 +13,20 @@ A chrome extension to translate web page threw the mt-hub platform
 8. 
 
 ## For developers
-´´´
-git clone 
+```
+git clone https://github.com/LaurentBie/web-translator
 npm install 
+```
+For dev:
+```
 npm run dev
-´´´
+```
+For Prod
+```
+npm run build
+```
+
+
 
 
 vue init ALiangLiang/vue-webpack-chrome-extension-template web-translator
