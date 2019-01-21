@@ -175,40 +175,40 @@
       },
 
       init () {
-        console.log("Popup: init")
+        console.log('Popup: init')
         if (localStorage.hasOwnProperty(STORAGE_DATA) && localStorage.hasOwnProperty(STORAGE_DATA_DATE)) {
           const data = JSON.parse(localStorage.getItem(STORAGE_DATA))
           const now = Date.now()
           const date = new Date(parseInt(localStorage.getItem(STORAGE_DATA_DATE)))
           if (now - date.getTime() < STORAGE_DATA_EXPIRE) {
-            console.log("Popup: Use stored data")
+            console.log('Popup: Use stored data')
             // We restore the data
             this.data = data
             // We update the date
             localStorage.setItem(STORAGE_DATA_DATE, now)
-          } else { 
+          } else {
             // We clear data storage because it has expired
             this.clearStorage(STORAGE_DATA)
             this.clearStorage(STORAGE_DATA_DATE)
-            this.initFromAuth()        
+            this.initFromAuth()
           }
         } else {
           this.initFromAuth()
         }
       },
-      
+  
       // Init from auth
-      initFromAuth() {
-        console.log("Popup: Try to init from auth")
+      initFromAuth () {
+        console.log('Popup: Try to init from auth')
         console.log(localStorage.getItem(STORAGE_AUTH))
-        if (localStorage.hasOwnProperty(STORAGE_AUTH) && localStorage.hasOwnProperty(STORAGE_AUTH_DATE)) {         
+        if (localStorage.hasOwnProperty(STORAGE_AUTH) && localStorage.hasOwnProperty(STORAGE_AUTH_DATE)) {
           const auth = JSON.parse(localStorage.getItem(STORAGE_AUTH))
-          console.log("Popup: Auth data found")
+          console.log('Popup: Auth data found')
           const now = Date.now()
           const date = new Date(parseInt(localStorage.getItem(STORAGE_AUTH_DATE)))
 
           if (now - date.getTime() < STORAGE_AUTH_EXPIRE) {
-            console.log("Popup: auth data not expired")
+            console.log('Popup: auth data not expired')
             this.data.accessPoint = auth.accessPoint
             this.data.apiKey = auth.apiKey
           } else {
@@ -216,7 +216,7 @@
             this.clearStorage(STORAGE_AUTH_DATE)
           }
         }
-      },      
+      },
 
       engineSelected () {
         this.saveData()
@@ -224,7 +224,6 @@
 
       // Translate current tab
       translate () {
-  
         console.log('Translating')
         const srcLang = this.data.engine[1]
         const tgtLang = this.data.engine[2]
@@ -237,10 +236,12 @@
         const code = `window.webPageTranslator.translate("${srcLang}", "${tgtLang}", "${domain}", "${apiKey}", "${accessPoint}", ${batchSize})`
         console.log(`Translate: "${srcLang}", "${tgtLang}", "${domain}", "${accessPoint}", ${batchSize}"`)
         const that = this
-        chrome.tabs.executeScript(null, {code: code}, function() {
-          that.$message.success({'message':'Translation started...', duration:5000})
-          setTimeout(function(){ window.close() }, 5000);
-        })    
+        chrome.tabs.executeScript(null, {code: code}, function () {
+          that.$message.success({'message': 'Translation started...', duration: 5000})
+          setTimeout(function () {
+            window.close()
+          }, 5000)
+        })
       },
 
       // Restore

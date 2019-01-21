@@ -102,12 +102,12 @@ class TransUnit {
     }
   }
 
-  restore() {
+  restore () {
     this._parts.forEach(part => {
       part.restore()
-    })  
+    })
   }
-  
+
   debug (color) {
     this._parts.forEach(part => {
       part.debug(color)

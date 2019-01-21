@@ -7,9 +7,9 @@ export default class WebPageTranslator {
   translate (srcLang, tgtLang, domain, apiKey, accessPoint, batchSize) {
     if (this._currentTranslator !== null) {
       this._currentTranslator.stop()
-    } 
+    }
     const translator = new Translator(document.body, srcLang, tgtLang, domain, apiKey, accessPoint, batchSize)
-    this._currentTranslator = translator 
+    this._currentTranslator = translator
 
     return true
   }

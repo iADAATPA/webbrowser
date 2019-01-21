@@ -56,7 +56,7 @@ export default class TranslationBatch {
     }
 
     const that = this
-    
+
     // Send request
     fetch(url, options).then(response => {
       if (response.ok) {
@@ -68,7 +68,7 @@ export default class TranslationBatch {
               })
               console.log('Translation batch  of ', this._transUnits.length, 'took', elapsedTime.getValue())
             } else {
-              console.log('Translation batch stopped. trans unit is not updated' )
+              console.log('Translation batch stopped. trans unit is not updated')
             }
           } else {
             // TODO

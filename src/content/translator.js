@@ -7,7 +7,7 @@ import ElapsedTime from 'elapsed-time'
 export default class Translator {
   constructor (element, srcLang, tgtLang, domain, apiKey, accessPoint, batchSize) {
     console.log('Translator: Created')
-    
+
     // Some initializations
     this._element = element
     this._srcLang = srcLang
@@ -73,12 +73,12 @@ export default class Translator {
     this._timer = setInterval(function () { that._translate() }, 300)
   }
 
-  stop() {
+  stop () {
     this._running = false
     this._transUnits.forEach(transUnit => {
       transUnit.restore()
     })
-    clearInterval(this._timer);
+    clearInterval(this._timer)
   }
 
   _translate () {
@@ -120,7 +120,7 @@ export default class Translator {
     return this._accessPoint
   }
 
-  isRunning() {
+  isRunning () {
     return this._running
   }
 }

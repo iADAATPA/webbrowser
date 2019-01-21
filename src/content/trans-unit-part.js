@@ -32,10 +32,9 @@ export default class TransUnitPart {
           this._element.remove()
         }
       }
+    } catch (error) {
+      console.error(error)
     }
-    catch(error) {
-      console.error(error);
-    } 
   }
 
   _createFontElement (color = null) {
