@@ -25,32 +25,6 @@
                   </el-form-item> 
                 </el-col>
               </el-row>
-            <!-- <el-row :gutter="15">
-              <el-col :span="12">               
-                <el-form-item label="Source Language">
-                  <el-select v-model="data.translateForm.srcLangName" placeholder="Source Language" @change="srcLangNameChanged">
-                    <el-option
-                      v-for="(item, index) in data.translateForm.enginesByLang"
-                      :key="index"
-                      :label="index"
-                      :value="index">
-                    </el-option>             
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">             
-                <el-form-item label="Target Language">
-                  <el-select v-model="data.translateForm.engine" @change="engineSelected" placeholder="Target Language" value-key="index">
-                    <el-option                    
-                      v-for="option in data.translateForm.enginesByLang[data.translateForm.srcLangName]"
-                      :key="option.index"                    
-                      :label="option.tgtLangName"
-                      :value="option">
-                    </el-option>              
-                  </el-select>
-                </el-form-item>
-              </el-col>                 
-            </el-row> -->
             <el-row> 
               <!-- Translate button -->
               <el-col :span="24">
@@ -107,7 +81,7 @@
   const STORAGE_VERSION = 'v5'
   const STORAGE_DATA = 'app-data' + STORAGE_VERSION
   const STORAGE_DATA_DATE = 'app-data-date' + STORAGE_VERSION
-  const STORAGE_DATA_EXPIRE = 15 * 60 * 1000 // 15 mins
+  const STORAGE_DATA_EXPIRE = 15 * 60 * 1000
   const STORAGE_AUTH = 'app-auth' + STORAGE_VERSION
   const STORAGE_AUTH_DATE = 'app-auth-date' + STORAGE_VERSION
   const STORAGE_AUTH_EXPIRE = 90 * 24 * 60 * 60 * 1000 // 90 dias
@@ -137,9 +111,6 @@
     data () {
       return {
         data: getDefault()
-        // options: [],
-        // selectedOptions: [],
-        // selectedOptions2: []
       }
     },
     computed: { },
@@ -194,7 +165,7 @@
 
       saveAuth () {
         const auth = JSON.stringify({
-          accessPoint: (this.data.accessPoint),
+          accessPoint: this.data.accessPoint,
           apiKey: this.data.apiKey
         })
         const date = Date.now()
@@ -203,76 +174,56 @@
       },
 
       init () {
+        console.log("Popup: init")
         if (localStorage.hasOwnProperty(STORAGE_DATA) && localStorage.hasOwnProperty(STORAGE_DATA_DATE)) {
           const data = JSON.parse(localStorage.getItem(STORAGE_DATA))
           const now = Date.now()
           const date = new Date(parseInt(localStorage.getItem(STORAGE_DATA_DATE)))
           if (now - date.getTime() < STORAGE_DATA_EXPIRE) {
+            console.log("Popup: Use stored data")
             // We restore the data
             this.data = data
             // We update the date
             localStorage.setItem(STORAGE_DATA_DATE, now)
-          } else {
-            // We clear data storage beacause it has expired
+          } else { 
+            // We clear data storage because it has expired
             this.clearStorage(STORAGE_DATA)
             this.clearStorage(STORAGE_DATA_DATE)
-  
-            if (localStorage.hasOwnProperty(STORAGE_AUTH) && localStorage.hasOwnProperty(STORAGE_AUTH_DATE)) {
-              const auth = JSON.parse(localStorage.getItem(STORAGE_AUTH))
-              const now = Date.now()
-              const date = new Date(parseInt(localStorage.getItem(STORAGE_AUTH_DATE)))
-  
-              if (now - date.getTime() < STORAGE_AUTH_EXPIRE) {
-                this.data.accessPoint = auth.accessPoint
-                this.data.apiKey = auth.apiKey
-              } else {
-                this.clearStorage(STORAGE_AUTH)
-                this.clearStorage(STORAGE_AUTH_DATE)
-              }
-            }
+            this.initFromAuth()        
           }
+        } else {
+          this.initFromAuth()
         }
       },
-      notifiyAuthError () {
-        this.$notify.error({
-          title: 'Authentication error',
-          message: 'Please, retry...',
-          duration: 3000
-        })
-      },
+      
+      // Init from auth
+      initFromAuth() {
+        console.log("Popup: Try to init from auth")
+        console.log(localStorage.getItem(STORAGE_AUTH))
+        if (localStorage.hasOwnProperty(STORAGE_AUTH) && localStorage.hasOwnProperty(STORAGE_AUTH_DATE)) {         
+          const auth = JSON.parse(localStorage.getItem(STORAGE_AUTH))
+          console.log("Popup: Auth data found")
+          const now = Date.now()
+          const date = new Date(parseInt(localStorage.getItem(STORAGE_AUTH_DATE)))
+
+          if (now - date.getTime() < STORAGE_AUTH_EXPIRE) {
+            console.log("Popup: auth data not expired")
+            this.data.accessPoint = auth.accessPoint
+            this.data.apiKey = auth.apiKey
+          } else {
+            this.clearStorage(STORAGE_AUTH)
+            this.clearStorage(STORAGE_AUTH_DATE)
+          }
+        }
+      },      
 
       engineSelected () {
         this.saveData()
       },
-      // When srcLang is selected we update tgtlang
-      // srcLangNameChanged () {
-      //   const srcLangName = this.data.translateForm.srcLangName
-      //   const engines = this.data.translateForm.enginesByLang[srcLangName]
-  
-      //   let engineToSelect = null
-      //   let engineSelected = this.data.translateForm.engine
-
-      //   for (let e of engines) {
-      //     if (engineSelected != null) {
-      //       if (e.tgtLang === engineSelected.tgtLang) {
-      //         engineToSelect = e
-      //         break
-      //       }
-      //     }
-      //   }
-      //   this.data.translateForm.engine = engineToSelect
-      //   this.saveData()
-      // },
-
-      // When tgt lang is selected
-      // engineSelected () {
-      //   console.log('Engine selected manually', this.data.translateForm.engine)
-      //   this.saveData()
-      // },
 
       // Translate current tab
       translate () {
-        this.$message.success('Translation started...')
+  
         console.log('Translating')
         const srcLang = this.data.engine[1]
         const tgtLang = this.data.engine[2]
@@ -284,10 +235,11 @@
         // send the js code to current tab
         const code = `window.webPageTranslator.translate("${srcLang}", "${tgtLang}", "${domain}", "${apiKey}", "${accessPoint}", ${batchSize})`
         console.log(`Translate: "${srcLang}", "${tgtLang}", "${domain}", "${accessPoint}", ${batchSize}"`)
-        chrome.tabs.executeScript(null, {code: code})
-        // chrome.tabs.executeScript(null, {file: 'js/content.js'}, function () {
-        //   // start translation
-        // })
+        const that = this
+        chrome.tabs.executeScript(null, {code: code}, function() {
+          that.$message.success({'message':'Translation started...', duration:5000})
+          setTimeout(function(){ window.close() }, 5000);
+        })    
       },
 
       // Restore
@@ -311,21 +263,23 @@
       clearStorage (key) {
         console.log('Delete storage', key)
         if (localStorage.hasOwnProperty(key)) {
-          console.log('delete storage', key)
-          localStorage.clear(key)
+          localStorage.removeItem(key)
         }
       }
     }
   }
 </script>
 <style lang="scss">
+
   #header {
     margin-bottom:8px;
   }
+  /* Header */
   #logo-container {
     float:left;
     padding-left:2px
   }
+
   h1 {
     font-size:14px;    
     color:#3B3B3B;
@@ -337,7 +291,6 @@
     vertical-align: middle;
     text-transform: uppercase;
   }
-
 
   #logo {
     -webkit-border-radius: 3px;
@@ -359,13 +312,30 @@
   #options-info {
     margin-top:0
   }
+  
+  /* Cascader */
+  .el-cascader-menu__item--extensible:after {
+    right: 10px !important;
+  }
 
+  .el-cascader-menu {
+     min-width: 150px !important;
+  }
+
+  .el-cascader-menu__item {
+    padding-left:15px !important;
+    padding-right:15px !important;
+  }  
+
+  /* Footer */
   #credits-card {
     margin-top:10px
   }
+
   #logo-ce-container {
     float: left;
   }
+
   #credits {
     float:left;
     width: 200px;
@@ -378,17 +348,4 @@
     height: auto;
   }
 
-  .el-cascader-menu__item--extensible:after {
-    right: 10px !important;
-  }
-
-  .el-cascader-menu {
-     min-width: 150px !important;
-  }
-  .el-cascader-menu__item {
-    padding-left:15px !important;
-    padding-right:15px !important;
-  }
-
-  
 </style>

@@ -12,10 +12,10 @@ let resolve = (dir) => path.join(rootDir, 'src', dir)
 module.exports = {
   entry: {
     popup: resolve('./popup'),
-    tab: resolve('./tab'),
-    options: resolve('./options'),
+    //tab: resolve('./tab'),
+    // options: resolve('./options'),
     content: resolve('./content'),
-    background: resolve('./background')
+    //background: resolve('./background'),
   },
   output: {
     path: path.join(rootDir, 'dist'),
@@ -86,16 +86,16 @@ module.exports = {
     }]
   },
   plugins: [
-    new CleanWebpackPlugin(['*'], { root: path.join(rootDir, 'dist') }),
+		new CleanWebpackPlugin(['*'], { root: path.join(rootDir, 'dist') }),
     // Customize your extension structure.
-    htmlPage('home', 'app', ['manifest', 'vendor', 'tab']),
+    //htmlPage('home', 'app', ['manifest', 'vendor', 'tab']),
     htmlPage('popup', 'popup', ['manifest', 'vendor', 'popup']),
-    htmlPage('options', 'options', ['manifest', 'vendor', 'options']),
-    htmlPage('background', 'background', ['manifest', 'vendor', 'background']),
+    // htmlPage('options', 'options', ['manifest', 'vendor', 'options']),
+    // htmlPage('background', 'background', ['manifest', 'vendor', 'background']),
     // End customize
     new CopyWebpackPlugin([{ from: path.join(rootDir, 'static') }]),
     new ChromeReloadPlugin({
-      port: 20000,
+      port: 9090,
       manifest: path.join(rootDir, 'src', 'manifest.js')
     }),
     new webpack.optimize.CommonsChunkPlugin({

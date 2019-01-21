@@ -23,10 +23,12 @@ export default class TransUnitPart {
     this._element.appendChild(textElement)
   }
 
-  restoreTextNode () {
-    const textNode = document.createTextNode(this._originalText)
-    this._element.parentNode.insertBefore(textNode, this._element)
-    this._element.remove()
+  restore () {
+    if (this._element !== null) {
+      const textNode = document.createTextNode(this._originalText)
+      this._element.parentNode.insertBefore(textNode, this._element)
+      this._element.remove()
+    }
   }
 
   _createFontElement (color = null) {

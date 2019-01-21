@@ -35,8 +35,8 @@ export default class User {
                 })
               })
               // for debug. REMOVE ME
-              const engine = new Engine('xx', 'yyy', 'balabla', 'zh', 'en')
-              user._engines.push(engine)
+              // const engine = new Engine('xx', 'yyy', 'balabla', 'zh', 'en')
+              // user._engines.push(engine)
 
               // Sort engines byLang
               this._engines = this._engines.sort(function (e1, e2) {

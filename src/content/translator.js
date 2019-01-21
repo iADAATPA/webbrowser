@@ -7,6 +7,7 @@ import ElapsedTime from 'elapsed-time'
 export default class Translator {
   constructor (element, srcLang, tgtLang, domain, apiKey, accessPoint, batchSize) {
     console.log('Translator: Created')
+    
     // Some initializations
     this._element = element
     this._srcLang = srcLang
@@ -15,6 +16,7 @@ export default class Translator {
     this._apiKey = apiKey
     this._accessPoint = accessPoint
     this._batchSize = batchSize
+    this._running = true
 
     // Map of containers. a container is a DOM element that contain one or more transUnits
     this._containers = new Map()
@@ -25,12 +27,11 @@ export default class Translator {
     // Extract transUnits
     const elapsedTime = ElapsedTime.new().start()
     const parser = new TransUnitParser(this._element)
-    const transUnits = parser.getTransUnits()
-    console.log('Translator:', transUnits.length, 'TransUnits Parsed in', elapsedTime.getValue())
+    this._transUnits = parser.getTransUnits()
+    console.log('Translator:', this._transUnits.length, 'TransUnits parsed in', elapsedTime.getValue())
 
     // Put transUnits in containers
-
-    transUnits.forEach(transUnit => {
+    this._transUnits.forEach(transUnit => {
       let root = transUnit.getRoot()
       let id = root.getAttribute(ROOT_ID_ATTRIBUTE)
       let container
@@ -59,7 +60,7 @@ export default class Translator {
       })
     }, {rootMargin: '0px 0px 500px 0px', threshold: 0})
 
-    console.log('Translator: ViewPort and transUnits container intersection are observed ')
+    console.log('Translator: Viewport and transUnits container intersection are observed ')
 
     // Add all containers to the observer
     this._containers.forEach(container => {
@@ -68,8 +69,16 @@ export default class Translator {
     })
 
     // Timout
-    let t = this
-    this._timer = setInterval(function () { t._translate() }, 100)
+    const that = this
+    this._timer = setInterval(function () { that._translate() }, 300)
+  }
+
+  stop() {
+    this._running = false
+    this._transUnits.forEach(transUnit => {
+      transUnit.restore()
+    })
+    clearInterval(this._timer);
   }
 
   _translate () {
@@ -109,5 +118,9 @@ export default class Translator {
 
   getAccessPoint () {
     return this._accessPoint
+  }
+
+  isRunning() {
+    return this._running
   }
 }

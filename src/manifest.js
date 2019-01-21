@@ -3,8 +3,8 @@
  */
 module.exports = {
   name: 'web-translator',
-  description: 'A browser extension to translate web pages',
-  author: 'laurent <l.bie@pangeanci.com>',
+  description: 'A Chrome extension to translate web pages',
+  author: 'Laurent Bié <l.bie@pangeanic.com>',
   version: '1.0.0',
   icons: {
     '16': 'icons/16.png',
@@ -23,14 +23,14 @@ module.exports = {
     'storage'
   ],
   browser_action: {
-    default_title: 'title',
+    default_title: 'Web Translator',
     default_popup: 'pages/popup.html'
   },
-  background: {
-    persistent: false,
-    page: 'pages/background.html'
-  },
-  options_page: 'pages/options.html',
+  // background: {
+  //   persistent: false,
+  //   page: 'pages/background.html'
+  // },
+  // options_page: 'pages/options.html',
   content_scripts: [{
     js: [
       'js/manifest.js',
@@ -39,7 +39,7 @@ module.exports = {
     ],
     run_at: 'document_end',
     matches: ['<all_urls>'],
-    all_frames: true
+    all_frames: false
   }],
   manifest_version: 2,
   content_security_policy: "script-src 'self'; object-src 'self'",

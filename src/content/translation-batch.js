@@ -55,15 +55,21 @@ export default class TranslationBatch {
       body: body
     }
 
+    const that = this
+    
     // Send request
     fetch(url, options).then(response => {
       if (response.ok) {
         response.json().then(json => {
           if (json.success) {
-            json.data.segments.forEach((segment, i) => {
-              this._transUnits[i].setTgt(segment.translation)
-            })
-            console.log('translation batch  of ', this._transUnits.length, 'took', elapsedTime.getValue())
+            if (that._translator.isRunning()) {
+              json.data.segments.forEach((segment, i) => {
+                this._transUnits[i].setTgt(segment.translation)
+              })
+              console.log('Translation batch  of ', this._transUnits.length, 'took', elapsedTime.getValue())
+            } else {
+              console.log('Translation batch stopped. trans unit is not updated' )
+            }
           } else {
             // TODO
           }
