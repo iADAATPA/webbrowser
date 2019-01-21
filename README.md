@@ -27,7 +27,7 @@ npm run build
 ```
 
 ## More
-This extension is based on https/www.npmjs.com/package/vue-webpack-chrome-extension-template
+This extension is based on https://www.npmjs.com/package/vue-webpack-chrome-extension-template
 
 
 
