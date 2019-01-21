@@ -24,11 +24,18 @@ export default class TransUnitPart {
   }
 
   restore () {
-    if (this._element !== null) {
-      const textNode = document.createTextNode(this._originalText)
-      this._element.parentNode.insertBefore(textNode, this._element)
-      this._element.remove()
+    try {
+      if (this._element !== null) {
+        if (this._element.parentNode !== null) {
+          const textNode = document.createTextNode(this._originalText)
+          this._element.parentNode.insertBefore(textNode, this._element)
+          this._element.remove()
+        }
+      }
     }
+    catch(error) {
+      console.error(error);
+    } 
   }
 
   _createFontElement (color = null) {
