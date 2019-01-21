@@ -2,7 +2,8 @@
   <div style="width:500px" id="main">
     <!-- Header -->
     <el-container id="header">
-      <div id="logo-container"><div id="logo"><img src="./assets/imgs/logo-mt-hub-small.png"></div></div><h1>Web translator</h1>
+      <div id="logo-container"><div id="logo"><img src="./assets/imgs/logo-mt-hub-small.png"></div></div>
+      <div id="header-info"><h1>Web translator</h1><p>by mt-hub</p></div>
     </el-container>  
     
     <!-- Tabs -->
@@ -279,18 +280,28 @@
     float:left;
     padding-left:2px
   }
+  #header-info {
 
-  h1 {
-    font-size:14px;    
-    color:#3B3B3B;
-    font-weight:bold;
     float:left;
     padding-left: 5px;
-    margin:0;
-    line-height: 26px;
-    vertical-align: middle;
-    text-transform: uppercase;
+    padding-top:3px
   }
+
+  #header-info p {
+    margin: 3px 0 0 0
+  }
+
+  h1 {
+    font-size:16px;    
+    color:#3B3B3B;
+    font-weight:bold;
+    margin:0;
+    line-height: 16px;
+    text-transform: uppercase;
+
+   
+  }
+  
 
   #logo {
     -webkit-border-radius: 3px;
@@ -305,7 +316,7 @@
   }
 
   #logo img {
-    width:20px;
+    width:36px;
     height: auto;
   }
 
