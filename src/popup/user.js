@@ -27,16 +27,11 @@ export default class User {
                 const engines = s.engines
                 engines.forEach(e => {
                   let domain = e.domain
-                  if (domain === '') {
-                    domain = 'Generic'
-                  }
+
                   const engine = new Engine(supplier, e.name, domain, e.source, e.target)
                   user._engines.push(engine)
                 })
               })
-              // for debug. REMOVE ME
-              // const engine = new Engine('xx', 'yyy', 'balabla', 'zh', 'en')
-              // user._engines.push(engine)
 
               // Sort engines byLang
               this._engines = this._engines.sort(function (e1, e2) {
@@ -63,21 +58,21 @@ export default class User {
 
               console.log(this._engines)
 
-              // EngineByLang
-              this._enginesByLang = {}
-              this._engines.forEach((e, i) => {
-                let key = e.srcLangName
-                if (!(key in this._enginesByLang)) {
-                  this._enginesByLang[key] = []
-                }
-                this._enginesByLang[key].push({
-                  index: i,
-                  srcLang: e.srcLang,
-                  tgtLang: e.tgtLang,
-                  tgtLangName: e.tgtLangName,
-                  domain: e.domain
-                })
-              })
+              // // EngineByLang
+              // this._enginesByLang = {}
+              // this._engines.forEach((e, i) => {
+              //   let key = e.srcLangName
+              //   if (!(key in this._enginesByLang)) {
+              //     this._enginesByLang[key] = []
+              //   }
+              //   this._enginesByLang[key].push({
+              //     index: i,
+              //     srcLang: e.srcLang,
+              //     tgtLang: e.tgtLang,
+              //     tgtLangName: e.tgtLangName,
+              //     domain: e.domain
+              //   })
+              // })
 
               // Engine Cascader
               this._engineCascader = []
@@ -86,8 +81,9 @@ export default class User {
 
               this._engines.forEach((e, i) => {
                 if (currentDomain == null || e.domain !== currentDomain.value) {
+                  console.log('\nxxxxx----xxxxx\nnew Domain', e.domainShown)
                   currentDomain = {
-                    label: e.domain,
+                    label: e.domainShown,
                     value: e.domain,
                     children: []
                   }
@@ -96,6 +92,7 @@ export default class User {
                 }
 
                 if (currentSrcLang == null || e.srcLang !== currentSrcLang.value) {
+                  console.log('\n--\nnew Src lang', e.srcLangName)
                   currentSrcLang = {
                     label: e.srcLangName,
                     value: e.srcLang,
@@ -103,6 +100,7 @@ export default class User {
                   }
                   currentDomain.children.push(currentSrcLang)
                 }
+                console.log('new Tgt lang', e.tgtLangName)
                 currentSrcLang.children.push({
                   label: e.tgtLangName,
                   value: e.tgtLang
@@ -136,9 +134,9 @@ export default class User {
     })
     return promise
   }
-  getEnginesByLang () {
-    return this._enginesByLang
-  }
+  // getEnginesByLang () {
+  //   return this._enginesByLang
+  // }
 
   getEngineCascader () {
     return this._engineCascader

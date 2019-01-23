@@ -29,7 +29,7 @@
             <el-row> 
               <!-- Translate button -->
               <el-col :span="24">
-                <el-button type="primary" :disabled="data.engine == null? true:false" @click="translate">Translate</el-button>
+                <el-button type="primary" @click="translate">Translate</el-button>
               </el-col>
             </el-row>
           </el-form>
@@ -53,7 +53,7 @@
         </el-tab-pane> 
         <!-- Options -->
         <el-tab-pane label="Options" name="options">
-          <el-form ref="optionForm">  
+          <el-form ref="optionForm">
             <p id="options-info">For a better user experience, this plug-in store your api key and the acccess point you used. 
               You can delete these data clicking the "delete button" above.</p>      
             <el-button type="primary" @click="restore" size="small">Delete</el-button>
@@ -101,7 +101,7 @@
       apiKey: '',
 
       engines: [],
-      engine: null,
+      engine: [],
 
       // Auth loading
       authenticateLoading: false
@@ -144,7 +144,7 @@
             that.data.translateTabDisabled = 0
 
             // Translate form restore language selection
-            that.data.engine = null
+            that.data.engine = []
 
             // populate engine selector
             const engineCascader = user.getEngineCascader()
@@ -285,27 +285,25 @@
     padding-left:2px
   }
   #header-info {
-
     float:left;
-    padding-left: 5px;
-    padding-top:3px
+    padding-left: 8px;
+    padding-top:5px
   }
 
   #header-info p {
-    margin: 3px 0 0 0
+    line-height:16px;
+    margin:0
   }
 
-  h1 {
-    font-size:16px;    
+  h1 {   
+    font-size:18px;    
     color:#3B3B3B;
     font-weight:bold;
     margin:0;
-    line-height: 16px;
-    text-transform: uppercase;
-
-   
-  }
-  
+     margin-top:2px;
+    line-height: 18px;
+    text-transform: capitalize;  
+  }  
 
   #logo {
     -webkit-border-radius: 3px;
@@ -325,7 +323,8 @@
   }
 
   #options-info {
-    margin-top:0
+    margin-top:0;
+    line-height:20px;
   }
   
   /* Cascader */
@@ -339,7 +338,11 @@
 
   .el-cascader-menu__item {
     padding-left:15px !important;
-    padding-right:15px !important;
+    padding-right:18px !important;
+    white-space: nowrap !important;;
+    overflow: hidden !important;;
+    text-overflow: ellipsis !important;;
+    max-width: 160px
   }  
 
   /* Footer */
@@ -353,9 +356,18 @@
 
   #credits {
     float:left;
-    width: 200px;
-    padding-top:19px;
-    padding-left:15px;
+    margin-left:15px;
+    border-bottom-left-radius: 4px;
+    background-color: #ecf8ff;
+    border-bottom-right-radius:4px;
+    border-left-color: rgb(80, 191, 255);
+    border-left-style:solid;
+    border-left-width:5px;
+    border-top-left-radius:4px;
+    border-top-right-radius:4px;
+    display:block;
+    font-family:"Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimSun, sans-serif;
+    padding: 16px 16px;
   }
 
   #logo-ce {
