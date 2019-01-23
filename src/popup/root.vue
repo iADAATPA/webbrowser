@@ -1,15 +1,27 @@
 <template> 
   <div style="width:500px" id="main">
     <!-- Header -->
-    <el-container id="header">
-      <div id="logo-container"><div id="logo"><img src="./assets/imgs/logo-mt-hub-small.png"></div></div>
-      <div id="header-info"><h1>Web translator</h1><p>by mt-hub</p></div>
-    </el-container>  
+
+      <el-row id="header">
+            <el-col :span="12">
+              <div id="logo-container"><div id="logo"><img src="./assets/imgs/logo-mt-hub-small.png"></div></div>
+              <div id="header-info"><h1>Web translator</h1><p>by <a href="http://pangeamt.com">pangeamt</a> for <a href="https://mt-hub.eu/">mt-hub</a></p></div>
+            </el-col>
+          <el-col :span="12">
+            <div id="header-right">
+              <el-button-group>
+                <el-button  size="mini" @click="restore">log out</el-button>
+                <el-button icon="el-icon-close"  size="mini" @click="closeWindow"></el-button>
+              </el-button-group>                   
+            </div>
+          </el-col>
+      </el-row>
+  
     
     <!-- Tabs -->
     <div id="tabs">    
       <el-tabs v-model="data.activeTab" type="border-card">
-        <el-tab-pane label="Translate" name="translate" :disabled="data.translateTabDisabled == 1? true:false">
+        <el-tab-pane label="Translate" name="translate" :disabled="data.loggedIn == 0? true:false">
             <el-form ref="form">
               <el-row>
                 <el-col :span="24">
@@ -52,14 +64,14 @@
           </el-form>
         </el-tab-pane> 
         <!-- Options -->
-        <el-tab-pane label="Options" name="options">
+        <!-- <el-tab-pane label="Options" name="options">
           <el-form ref="optionForm">
             <p id="options-info">For a better user experience, this plug-in store your api key and the acccess point you used. 
               You can delete these data clicking the "delete button" above.</p>      
             <el-button type="primary" @click="restore" size="small">Delete</el-button>
           </el-form>
-        </el-tab-pane>          
-      </el-tabs>    
+        </el-tab-pane>  -->        
+      </el-tabs>     
     </div>
     <el-row>
       <el-col :span="24">
@@ -79,7 +91,7 @@
 <script>
   import User from './user'
 
-  const STORAGE_VERSION = 'v5'
+  const STORAGE_VERSION = 'v6'
   const STORAGE_DATA = 'app-data' + STORAGE_VERSION
   const STORAGE_DATA_DATE = 'app-data-date' + STORAGE_VERSION
   const STORAGE_DATA_EXPIRE = 15 * 60 * 1000
@@ -95,7 +107,7 @@
     let data = {
       // Tabs
       activeTab: 'login',
-      translateTabDisabled: 1,
+      loggedIn: 0,
   
       accessPoint: 'https://mt-hub.eu/api',
       apiKey: '',
@@ -141,7 +153,7 @@
           if (user.isAuthenticated()) {
             // Tab
             that.data.activeTab = 'translate'
-            that.data.translateTabDisabled = 0
+            that.data.loggedIn = 1
 
             // Translate form restore language selection
             that.data.engine = []
@@ -227,6 +239,10 @@
 
       // Translate current tab
       translate () {
+        if (this.data.engine.length === 0) {
+          this.$message.error({'message': 'Please select a translation engine', duration: 5000})
+          return
+        }
         console.log('Translating')
         const srcLang = this.data.engine[1]
         const tgtLang = this.data.engine[2]
@@ -270,6 +286,10 @@
         if (localStorage.hasOwnProperty(key)) {
           localStorage.removeItem(key)
         }
+      },
+
+      closeWindow () {
+        window.close()
       }
     }
   }
@@ -320,6 +340,10 @@
   #logo img {
     width:36px;
     height: auto;
+  }
+
+  #header-right {
+      float:right
   }
 
   #options-info {
