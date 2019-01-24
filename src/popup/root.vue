@@ -1,11 +1,10 @@
 <template> 
   <div style="width:500px" id="main">
     <!-- Header -->
-
       <el-row id="header">
             <el-col :span="12">
               <div id="logo-container"><div id="logo"><img src="./assets/imgs/logo-mt-hub-small.png"></div></div>
-              <div id="header-info"><h1>Web translator</h1><p>by <a href="http://pangeamt.com">pangeamt</a> for <a href="https://mt-hub.eu/">mt-hub</a></p></div>
+              <div id="header-info"><h1>Web translator</h1><p>by <a href="http://pangeamt.com" target="_blank">pangeamt</a> for <a href="https://mt-hub.eu/" target="_blank">mt-hub</a></p></div>
             </el-col>
           <el-col :span="12">
             <div id="header-right">
@@ -15,8 +14,7 @@
               </el-button-group>                   
             </div>
           </el-col>
-      </el-row>
-  
+      </el-row>  
     
     <!-- Tabs -->
     <div id="tabs">    
@@ -62,15 +60,7 @@
               <!--  Sign in -->
               <el-button ref="authenticateButton" type="primary" @click="authenticate" :loading="data.authenticateLoading">Log in</el-button>
           </el-form>
-        </el-tab-pane> 
-        <!-- Options -->
-        <!-- <el-tab-pane label="Options" name="options">
-          <el-form ref="optionForm">
-            <p id="options-info">For a better user experience, this plug-in store your api key and the acccess point you used. 
-              You can delete these data clicking the "delete button" above.</p>      
-            <el-button type="primary" @click="restore" size="small">Delete</el-button>
-          </el-form>
-        </el-tab-pane>  -->        
+        </el-tab-pane>         
       </el-tabs>     
     </div>
     <el-row>
@@ -249,9 +239,9 @@
         const domain = this.data.engine[0]
         const apiKey = this.data.apiKey
         const accessPoint = this.data.accessPoint
-        const batchSize = 20
+        const batchSize = 10
   
-        // send the js code to current tab
+        // Send the js code to current tab
         const code = `window.webPageTranslator.translate("${srcLang}", "${tgtLang}", "${domain}", "${apiKey}", "${accessPoint}", ${batchSize})`
         console.log(`Translate: "${srcLang}", "${tgtLang}", "${domain}", "${accessPoint}", ${batchSize}"`)
         const that = this
@@ -346,10 +336,7 @@
       float:right
   }
 
-  #options-info {
-    margin-top:0;
-    line-height:20px;
-  }
+
   
   /* Cascader */
   .el-cascader-menu__item--extensible:after {

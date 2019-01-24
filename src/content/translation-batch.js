@@ -19,7 +19,7 @@ export default class TranslationBatch {
   }
 
   translate () {
-    console.log('Translate batch of ' + this._transUnits.length + ' transUnits')
+    console.log('Translator: Send batch of ' + this._transUnits.length + ' transUnits...')
 
     // Measure translation time
     const elapsedTime = ElapsedTime.new().start()
@@ -64,24 +64,23 @@ export default class TranslationBatch {
           if (json.success) {
             if (that._translator.isRunning()) {
               json.data.segments.forEach((segment, i) => {
-                this._transUnits[i].setTgt(segment.translation)
+                that._transUnits[i].setTgt(segment.translation)
               })
-              console.log('Translation batch  of ', this._transUnits.length, 'took', elapsedTime.getValue())
+              console.log('Translator: Batch  of ', that._transUnits.length, 'translated in', elapsedTime.getValue())
             } else {
-              console.log('Translation batch stopped. trans unit is not updated')
+              console.log('Translator: batch stopped. trans unit is not updated')
             }
           } else {
-            // TODO
+            console.log('Translator: Error no success')
           }
         }).catch(err => {
           console.log(err)
         })
       } else {
-        // TODO
+        console.log('Translator: HTTP error', response.status)
       }
     }).catch(err => {
       console.log(err)
-      // TODO
     })
   }
 }
