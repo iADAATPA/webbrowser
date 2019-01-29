@@ -84,7 +84,7 @@
   const STORAGE_VERSION = 'v6'
   const STORAGE_DATA = 'app-data' + STORAGE_VERSION
   const STORAGE_DATA_DATE = 'app-data-date' + STORAGE_VERSION
-  const STORAGE_DATA_EXPIRE = 15 * 60 * 1000
+  const STORAGE_DATA_EXPIRE = 24 * 60 * 60 * 1000
   const STORAGE_AUTH = 'app-auth' + STORAGE_VERSION
   const STORAGE_AUTH_DATE = 'app-auth-date' + STORAGE_VERSION
   const STORAGE_AUTH_EXPIRE = 90 * 24 * 60 * 60 * 1000 // 90 dias
