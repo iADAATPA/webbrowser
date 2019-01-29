@@ -16,11 +16,13 @@ export default class TransUnitPart {
   }
 
   addText (text) {
-    const textElement = this._createFontElement()
-    const textNode = document.createTextNode('')
-    textNode.data = text
-    textElement.appendChild(textNode)
-    this._element.appendChild(textElement)
+    if (this._element !== null) {
+      const textElement = this._createFontElement()
+      const textNode = document.createTextNode('')
+      textNode.data = text
+      textElement.appendChild(textNode)
+      this._element.appendChild(textElement)
+    }
   }
 
   restore () {

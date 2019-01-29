@@ -1,20 +1,20 @@
 <template> 
   <div style="width:500px" id="main">
     <!-- Header -->
-      <el-row id="header">
-            <el-col :span="12">
-              <div id="logo-container"><div id="logo"><img src="./assets/imgs/logo-mt-hub-small.png"></div></div>
-              <div id="header-info"><h1>Web translator</h1><p>by <a href="http://pangeamt.com" target="_blank">pangeamt</a> for <a href="https://mt-hub.eu/" target="_blank">mt-hub</a></p></div>
-            </el-col>
+    <el-row id="header">
           <el-col :span="12">
-            <div id="header-right">
-              <el-button-group>
-                <el-button  size="mini" @click="restore">log out</el-button>
-                <el-button icon="el-icon-close"  size="mini" @click="closeWindow"></el-button>
-              </el-button-group>                   
-            </div>
+            <div id="logo-container"><div id="logo"><img src="./assets/imgs/logo-mt-hub-small.png"></div></div>
+            <div id="header-info"><h1>Web translator</h1><p>by <a href="http://pangeamt.com" target="_blank">pangeamt</a> for <a href="https://mt-hub.eu/" target="_blank">mt-hub</a></p></div>
           </el-col>
-      </el-row>  
+        <el-col :span="12">
+          <div id="header-right">
+            <el-button-group>
+              <el-button  size="mini" @click="restore">log out</el-button>
+              <el-button icon="el-icon-close"  size="mini" @click="closeWindow"></el-button>
+            </el-button-group>                   
+          </div>
+        </el-col>
+    </el-row>  
     
     <!-- Tabs -->
     <div id="tabs">    
@@ -90,10 +90,6 @@
   const STORAGE_AUTH_EXPIRE = 90 * 24 * 60 * 60 * 1000 // 90 dias
 
   function getDefault () {
-    // PvWK3Im7srIYaudGh
-    // PROMPSIT: lKRblr1vwQMGd2fnn
-    // TILDE: P9uwFtgkDVnCqWou4
-
     let data = {
       // Tabs
       activeTab: 'login',
@@ -148,16 +144,14 @@
             // Translate form restore language selection
             that.data.engine = []
 
-            // populate engine selector
+            // Populate engine selector
             const engineCascader = user.getEngineCascader()
-            console.log(engineCascader)
             this.data.engines = engineCascader
   
             that.saveData()
             that.saveAuth()
           } else {
-            that.$message.error('Oops, authentication error. please, retry..')
-            console.log('auth error')
+            that.$message.error('Oops, authentication error. Please, retry...')
           }
         })
       },
@@ -335,8 +329,6 @@
   #header-right {
       float:right
   }
-
-
   
   /* Cascader */
   .el-cascader-menu__item--extensible:after {
